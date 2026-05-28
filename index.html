@@ -37,7 +37,7 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
 .ph .sub{font-size:11px;opacity:.75;margin-top:1px}
 .scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
 .tabs{display:flex;background:#fff;border-top:1px solid var(--b);flex-shrink:0;padding-bottom:env(safe-area-inset-bottom,0)}
-.tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:7px 2px 8px;cursor:pointer;border:none;background:none;color:var(--tl);font-size:9.5px;font-weight:500;gap:3px;transition:.15s;-webkit-user-select:none}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:7px 1px 8px;cursor:pointer;border:none;background:none;color:var(--tl);font-size:8.5px;font-weight:500;gap:3px;transition:.15s;-webkit-user-select:none}
 .tab svg{width:22px;height:22px;stroke-width:1.8}
 .tab.active{color:var(--p)}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 18px;border-radius:9px;border:none;cursor:pointer;font-size:14px;font-weight:600;transition:.15s;-webkit-user-select:none;white-space:nowrap}
@@ -264,7 +264,16 @@ textarea.fc{resize:none;min-height:75px}
   <div id="islem-yonet" class="scroll" style="display:none"></div>
 </div>
 
-<!-- ====== TAB 4: AYARLAR ====== -->
+<!-- ====== TAB 4: KOZMETİK ====== -->
+<div id="page-kozmetik" class="page">
+  <div class="ph"><div class="ph-inner"><h1>Kozmetik</h1></div></div>
+  <div class="scroll" id="kozmetik-list" style="flex:1"></div>
+  <div class="fab-area">
+    <button class="btn btn-p btn-full" onclick="openKozCatModal()">+ Alt Başlık Ekle</button>
+  </div>
+</div>
+
+<!-- ====== TAB 5: AYARLAR ====== -->
 <div id="page-maliyet" class="page">
   <div id="pin-screen" class="pin-screen">
     <div style="width:64px;height:64px;border-radius:50%;background:var(--pl);display:flex;align-items:center;justify-content:center;margin-bottom:16px;font-size:28px">🔒</div>
@@ -317,6 +326,9 @@ textarea.fc{resize:none;min-height:75px}
   </button>
   <button class="tab" onclick="showPage('islemler',this)">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>İşlemler
+  </button>
+  <button class="tab" onclick="showPage('kozmetik',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>Kozmetik
   </button>
   <button class="tab" onclick="showPage('maliyet',this)">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Ayarlar
@@ -586,6 +598,40 @@ textarea.fc{resize:none;min-height:75px}
 </div>
 </div>
 
+<!-- Kozmetik — Alt Başlık Modal -->
+<div class="overlay" id="ov-koz-cat">
+<div class="modal" style="max-height:40vh">
+  <div class="mdrag"></div>
+  <div class="mhead"><div class="mtitle" id="koz-cat-title">Alt Başlık Ekle</div><button class="mclose" onclick="closeModal('ov-koz-cat')">×</button></div>
+  <div class="mbody">
+    <input type="hidden" id="koz-cat-id">
+    <div class="fg"><label class="fl">Alt Başlık Adı</label><input type="text" class="fc" id="koz-cat-name" placeholder="ör. Serum, Krem, Güneş Koruyucu..."></div>
+  </div>
+  <div class="mfooter">
+    <button class="btn btn-err btn-sm" id="koz-cat-del-btn" style="display:none" onclick="deleteKozCat()">Sil</button>
+    <button class="btn btn-p" style="flex:1" onclick="saveKozCat()">Kaydet</button>
+  </div>
+</div>
+</div>
+
+<!-- Kozmetik — Ürün Modal -->
+<div class="overlay" id="ov-koz-prod">
+<div class="modal" style="max-height:50vh">
+  <div class="mdrag"></div>
+  <div class="mhead"><div class="mtitle" id="koz-prod-title">Ürün Ekle</div><button class="mclose" onclick="closeModal('ov-koz-prod')">×</button></div>
+  <div class="mbody">
+    <input type="hidden" id="koz-prod-cat-id">
+    <input type="hidden" id="koz-prod-id">
+    <div class="fg"><label class="fl">Ürün Adı</label><input type="text" class="fc" id="koz-prod-name" placeholder="Ürün adı..."></div>
+    <div class="fg"><label class="fl">Satış Fiyatı (₺)</label><input type="number" class="fc" id="koz-prod-price" placeholder="0" inputmode="decimal"></div>
+  </div>
+  <div class="mfooter">
+    <button class="btn btn-err btn-sm" id="koz-prod-del-btn" style="display:none" onclick="deleteKozProd()">Sil</button>
+    <button class="btn btn-p" style="flex:1" onclick="saveKozProd()">Kaydet</button>
+  </div>
+</div>
+</div>
+
 <!-- Toast -->
 <div class="toast" id="toast"></div>
 
@@ -596,7 +642,7 @@ textarea.fc{resize:none;min-height:75px}
 const SUPABASE_URL='https://wefyszgipfxrhpoldabd.supabase.co';
 const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndlZnlzemdpcGZ4cmhwb2xkYWJkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkzODA0NDIsImV4cCI6MjA5NDk1NjQ0Mn0.cRaiekCsyzmZqogYIgWSHJ2asCan9wheHijYTx4vkOI';
 const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-const SB_KEYS=['patients','appointments','procedures','products','consumables','settings','fiyatTemplates','cats'];
+const SB_KEYS=['patients','appointments','procedures','products','consumables','settings','fiyatTemplates','cats','kozmetik'];
 
 function setSyncStatus(s){
   const el=document.getElementById('sync-dot');
@@ -634,8 +680,8 @@ async function syncFromSupabase(){
       const merged=mergeArr(db[k]||[],sbMap[k]||[]);
       if(JSON.stringify(merged)!==JSON.stringify(db[k])){db[k]=merged;changed=true;}
     });
-    // Ürün/sarf/cats: remote doluysa al, boşsa locali koru
-    ['products','consumables','cats'].forEach(k=>{
+    // Ürün/sarf/cats/kozmetik: remote doluysa al, boşsa locali koru
+    ['products','consumables','cats','kozmetik'].forEach(k=>{
       const remote=sbMap[k];
       if(remote&&remote.length>0){
         if(JSON.stringify(remote)!==JSON.stringify(db[k])){db[k]=remote;changed=true;}
@@ -762,6 +808,7 @@ const SUB_PROD_MAP = {
 let db = {
   patients:[],appointments:[],procedures:[],
   products:[],consumables:[],cats:[],
+  kozmetik:[],
   settings:{pin:'1234',euroRate:40,laborMult:1,sarfCost:0},
   fiyatTemplates:{}
 };
@@ -782,11 +829,13 @@ function loadDB(){
     const scat=localStorage.getItem('ek_cats');
     db.cats=scat?JSON.parse(scat):CATS.map(c=>({...c}));
     db.cats.forEach(c=>{if(c.direct===undefined)c.direct=c.subs.length===0;});
+    const skoz=localStorage.getItem('ek_kozmetik');
+    db.kozmetik=skoz?JSON.parse(skoz):[];
   }catch(e){}
 }
 
 function saveDB(...keys){
-  if(!keys.length) keys=['patients','appointments','procedures','products','consumables','settings','fiyatTemplates','cats'];
+  if(!keys.length) keys=['patients','appointments','procedures','products','consumables','settings','fiyatTemplates','cats','kozmetik'];
   keys.forEach(k=>{
     try{
       const val=k==='fiyatTemplates'?db.fiyatTemplates:db[k];
@@ -811,6 +860,7 @@ function showPage(id,btn){
   if(id==='ajanda') renderCalendar();
   else if(id==='hastalar') renderPatients();
   else if(id==='islemler') renderIslemler();
+  else if(id==='kozmetik') renderKozmetik();
   else if(id==='maliyet') renderMaliyet();
 }
 
@@ -2877,6 +2927,141 @@ function closeAllPopups(){
   document.querySelectorAll('.popup').forEach(p=>p.remove());
 }
 
+// ==================== KOZMETİK ====================
+function renderKozmetik(){
+  const el=document.getElementById('kozmetik-list');
+  if(!el) return;
+  if(!db.kozmetik||!db.kozmetik.length){
+    el.innerHTML='<div class="empty"><div class="empty-icon">💄</div><p>Henüz alt başlık eklenmedi</p></div>';
+    return;
+  }
+  el.innerHTML=db.kozmetik.map(cat=>`
+    <div class="acc-item">
+      <div class="acc-head" onclick="toggleKozCat('koz-body-${cat.id}',this)">
+        <div class="acc-icon">💄</div>
+        <div class="acc-title">${cat.name}</div>
+        <button class="btn btn-sec btn-xs" style="margin-right:8px" onclick="event.stopPropagation();openKozCatModal('${cat.id}')">Düzenle</button>
+        <span class="acc-arrow">▾</span>
+      </div>
+      <div class="acc-body open" id="koz-body-${cat.id}">
+        ${cat.products&&cat.products.length?cat.products.map(p=>`
+          <div class="ci" style="background:#fff">
+            <div class="ci-name" style="font-size:14px;cursor:pointer" onclick="openKozProdModal('${cat.id}','${p.id}')">${p.name}</div>
+            <div style="display:flex;align-items:center;gap:6px">
+              <span style="font-size:12px;color:var(--tl)">₺</span>
+              <input type="number" class="ci-price" value="${p.price||''}" placeholder="0"
+                onchange="updateKozProdPrice('${cat.id}','${p.id}',this.value)"
+                onclick="this.select()" style="width:90px">
+            </div>
+          </div>`).join(''):'<div style="padding:12px 14px;color:var(--tl);font-size:13px">Henüz ürün eklenmedi</div>'}
+        <div style="padding:10px 14px;border-top:1px solid var(--b)">
+          <button class="btn btn-sec btn-sm btn-full" onclick="openKozProdModal('${cat.id}')">+ Ürün Ekle</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function toggleKozCat(bodyId,head){
+  const body=document.getElementById(bodyId);
+  const arrow=head.querySelector('.acc-arrow');
+  if(!body) return;
+  const open=body.classList.toggle('open');
+  body.style.display=open?'block':'none';
+  if(arrow) arrow.classList.toggle('open',open);
+}
+
+function openKozCatModal(catId){
+  const isEdit=!!catId;
+  document.getElementById('koz-cat-title').textContent=isEdit?'Alt Başlığı Düzenle':'Alt Başlık Ekle';
+  document.getElementById('koz-cat-id').value=catId||'';
+  document.getElementById('koz-cat-del-btn').style.display=isEdit?'':'none';
+  const cat=isEdit?db.kozmetik.find(c=>c.id===catId):null;
+  document.getElementById('koz-cat-name').value=cat?cat.name:'';
+  openModal('ov-koz-cat');
+  setTimeout(()=>document.getElementById('koz-cat-name').focus(),200);
+}
+
+function saveKozCat(){
+  const name=document.getElementById('koz-cat-name').value.trim();
+  if(!name){showToast('Alt başlık adı girin');return;}
+  const catId=document.getElementById('koz-cat-id').value;
+  if(catId){
+    const cat=db.kozmetik.find(c=>c.id===catId);
+    if(cat) cat.name=name;
+  } else {
+    db.kozmetik.push({id:'kcat_'+uid(),name,products:[]});
+  }
+  saveDB('kozmetik');
+  closeModal('ov-koz-cat');
+  renderKozmetik();
+  showToast(catId?'Alt başlık güncellendi':'Alt başlık eklendi');
+}
+
+function deleteKozCat(){
+  const catId=document.getElementById('koz-cat-id').value;
+  if(!catId) return;
+  if(!confirm('Bu alt başlık ve tüm ürünleri silinecek. Emin misiniz?')) return;
+  db.kozmetik=db.kozmetik.filter(c=>c.id!==catId);
+  saveDB('kozmetik');
+  closeModal('ov-koz-cat');
+  renderKozmetik();
+  showToast('Alt başlık silindi');
+}
+
+function openKozProdModal(catId,prodId){
+  const isEdit=!!prodId;
+  document.getElementById('koz-prod-title').textContent=isEdit?'Ürünü Düzenle':'Ürün Ekle';
+  document.getElementById('koz-prod-cat-id').value=catId;
+  document.getElementById('koz-prod-id').value=prodId||'';
+  document.getElementById('koz-prod-del-btn').style.display=isEdit?'':'none';
+  const cat=db.kozmetik.find(c=>c.id===catId);
+  const prod=isEdit&&cat?cat.products.find(p=>p.id===prodId):null;
+  document.getElementById('koz-prod-name').value=prod?prod.name:'';
+  document.getElementById('koz-prod-price').value=prod&&prod.price?prod.price:'';
+  openModal('ov-koz-prod');
+  setTimeout(()=>document.getElementById('koz-prod-name').focus(),200);
+}
+
+function saveKozProd(){
+  const name=document.getElementById('koz-prod-name').value.trim();
+  if(!name){showToast('Ürün adı girin');return;}
+  const price=parseFloat(document.getElementById('koz-prod-price').value)||0;
+  const catId=document.getElementById('koz-prod-cat-id').value;
+  const prodId=document.getElementById('koz-prod-id').value;
+  const cat=db.kozmetik.find(c=>c.id===catId);
+  if(!cat) return;
+  if(prodId){
+    const prod=cat.products.find(p=>p.id===prodId);
+    if(prod){prod.name=name;prod.price=price;}
+  } else {
+    if(!cat.products) cat.products=[];
+    cat.products.push({id:'kprod_'+uid(),name,price});
+  }
+  saveDB('kozmetik');
+  closeModal('ov-koz-prod');
+  renderKozmetik();
+  showToast(prodId?'Ürün güncellendi':'Ürün eklendi');
+}
+
+function deleteKozProd(){
+  const catId=document.getElementById('koz-prod-cat-id').value;
+  const prodId=document.getElementById('koz-prod-id').value;
+  const cat=db.kozmetik.find(c=>c.id===catId);
+  if(!cat||!prodId) return;
+  cat.products=cat.products.filter(p=>p.id!==prodId);
+  saveDB('kozmetik');
+  closeModal('ov-koz-prod');
+  renderKozmetik();
+  showToast('Ürün silindi');
+}
+
+function updateKozProdPrice(catId,prodId,val){
+  const cat=db.kozmetik.find(c=>c.id===catId);
+  if(!cat) return;
+  const prod=cat.products.find(p=>p.id===prodId);
+  if(prod){prod.price=parseFloat(val)||0;saveDB('kozmetik');}
+}
+
 // ==================== UTILITIES ====================
 function formatDate(ds){
   if(!ds) return '—';
@@ -2930,6 +3115,7 @@ syncFromSupabase().then(changed=>{
     renderCalendar();
     if(currentPage==='hastalar') renderPatients();
     if(currentPage==='islemler') renderIslemler();
+    if(currentPage==='kozmetik') renderKozmetik();
     if(currentPage==='maliyet') renderMaliyet&&renderMaliyet();
   }
 });
